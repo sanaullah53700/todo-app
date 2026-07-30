@@ -1,0 +1,1398 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Nest — Enterprise Multi-Role Task & Employee Platform</title>
+  
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Canvas Confetti -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+
+  <style>
+    :root {
+      --bg-dark: #0a0817;
+      --bg-card: rgba(18, 14, 38, 0.75);
+      --bg-card-hover: rgba(30, 24, 60, 0.85);
+      --bg-modal: #120e26;
+      --bg-input: #1a1536;
+
+      --border-color: rgba(255, 255, 255, 0.08);
+      --border-highlight: rgba(147, 51, 234, 0.4);
+
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+
+      --accent-purple: #9333ea;
+      --accent-indigo: #6366f1;
+      --accent-pink: #ec4899;
+      --accent-gradient: linear-gradient(135deg, #a855f7 0%, #6366f1 50%, #ec4899 100%);
+      --accent-glow: 0 0 25px rgba(168, 85, 247, 0.35);
+
+      /* Priority Colors */
+      --priority-very-imp-bg: rgba(239, 68, 68, 0.2);
+      --priority-very-imp-border: rgba(239, 68, 68, 0.5);
+      --priority-very-imp-text: #fca5a5;
+
+      --priority-imp-bg: rgba(245, 158, 11, 0.2);
+      --priority-imp-border: rgba(245, 158, 11, 0.5);
+      --priority-imp-text: #fde047;
+
+      --priority-normal-bg: rgba(59, 130, 246, 0.2);
+      --priority-normal-border: rgba(59, 130, 246, 0.5);
+      --priority-normal-text: #93c5fd;
+
+      --success-bg: rgba(16, 185, 129, 0.2);
+      --success-border: rgba(16, 185, 129, 0.5);
+      --success-text: #6ee7b7;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-full: 9999px;
+
+      --font-heading: 'Outfit', sans-serif;
+      --font-body: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: var(--font-body);
+      background-color: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      line-height: 1.5;
+      padding-bottom: 60px;
+      background-image: 
+        radial-gradient(at 10% 10%, rgba(147, 51, 234, 0.2) 0px, transparent 50%),
+        radial-gradient(at 90% 20%, rgba(99, 102, 241, 0.18) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.15) 0px, transparent 50%),
+        radial-gradient(at 80% 90%, rgba(16, 185, 129, 0.1) 0px, transparent 50%);
+      background-attachment: fixed;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, h5, h6 { font-family: var(--font-heading); font-weight: 700; letter-spacing: -0.02em; }
+
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: var(--bg-dark); }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--accent-purple); }
+
+    .glass-panel {
+      background: var(--bg-card);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      transition: all 0.25s ease;
+    }
+    .glass-panel:hover {
+      border-color: var(--border-highlight);
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+    }
+
+    .gradient-text {
+      background: var(--accent-gradient);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 10px 18px;
+      font-family: var(--font-body);
+      font-weight: 600;
+      font-size: 0.9rem;
+      border-radius: var(--radius-sm);
+      border: none;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      user-select: none;
+      white-space: nowrap;
+    }
+
+    .btn-primary {
+      background: var(--accent-gradient);
+      color: #ffffff;
+      box-shadow: var(--accent-glow);
+    }
+    .btn-primary:hover { transform: translateY(-2px); filter: brightness(1.1); }
+
+    .btn-secondary {
+      background: var(--bg-input); color: var(--text-primary); border: 1px solid var(--border-color);
+    }
+    .btn-secondary:hover { background: var(--bg-card-hover); border-color: var(--border-highlight); color: #ffffff; }
+
+    .btn-icon {
+      width: 36px; height: 36px; padding: 0; border-radius: var(--radius-sm);
+      background: var(--bg-input); color: var(--text-secondary); border: 1px solid var(--border-color);
+    }
+    .btn-icon:hover { color: var(--text-primary); border-color: var(--border-highlight); }
+
+    .priority-badge {
+      display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px;
+      font-size: 0.75rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em;
+      border-radius: var(--radius-full);
+    }
+    .priority-very-important {
+      background: var(--priority-very-imp-bg); color: var(--priority-very-imp-text); border: 1px solid var(--priority-very-imp-border);
+      box-shadow: 0 0 12px rgba(239, 68, 68, 0.3); animation: pulse-red 2s infinite;
+    }
+    .priority-important { background: var(--priority-imp-bg); color: var(--priority-imp-text); border: 1px solid var(--priority-imp-border); }
+    .priority-normal { background: var(--priority-normal-bg); color: var(--priority-normal-text); border: 1px solid var(--priority-normal-border); }
+
+    @keyframes pulse-red {
+      0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.4); }
+      70% { box-shadow: 0 0 0 8px rgba(239, 68, 68, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+    }
+
+    .status-badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 10px; font-size: 0.74rem; font-weight: 700; border-radius: var(--radius-full); }
+
+    .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 14px; }
+    .form-label { font-size: 0.84rem; font-weight: 600; color: var(--text-secondary); }
+    .form-control {
+      width: 100%; padding: 10px 14px; background: var(--bg-input);
+      border: 1px solid var(--border-color); border-radius: var(--radius-sm);
+      color: var(--text-primary); font-family: var(--font-body); font-size: 0.92rem; outline: none;
+    }
+    .form-control:focus { border-color: var(--accent-purple); box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2); }
+
+    .modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(5, 3, 14, 0.85); backdrop-filter: blur(12px);
+      z-index: 1000; display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal-content {
+      background: var(--bg-modal); border: 1px solid var(--border-highlight);
+      border-radius: var(--radius-lg); width: 100%; max-width: 580px; max-height: 90vh;
+      overflow-y: auto; padding: 26px; box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+    }
+
+    .container { max-width: 1320px; margin: 0 auto; padding: 0 20px; }
+    header { margin: 16px auto 24px auto; padding: 14px 24px; border-radius: 18px; }
+
+    .tab-btn {
+      padding: 10px 16px; font-size: 0.86rem; font-weight: 700; border-radius: var(--radius-sm);
+      border: 1px solid transparent; cursor: pointer; background: transparent; color: var(--text-secondary); transition: all 0.2s;
+    }
+    .tab-btn.active { background: var(--bg-input); color: #ffffff; border-color: var(--border-highlight); box-shadow: 0 4px 12px rgba(0,0,0,0.2); }
+
+    .bar-chart-container { display: flex; align-items: flex-end; gap: 12px; height: 160px; padding-top: 20px; }
+    .bar-group { flex: 1; display: flex; flex-direction: column; align-items: center; height: 100%; justify-content: flex-end; }
+    .bar-stack { width: 100%; max-width: 38px; display: flex; flex-direction: column-reverse; border-radius: 6px; overflow: hidden; background: rgba(255,255,255,0.05); }
+    .bar-item { width: 100%; transition: height 0.4s ease; position: relative; }
+    .bar-label { font-size: 0.72rem; color: var(--text-muted); margin-top: 6px; font-weight: 600; text-align: center; }
+
+    .score-circle {
+      width: 70px; height: 70px; border-radius: 50%;
+      background: conic-gradient(var(--accent-purple) calc(var(--score) * 1%), rgba(255,255,255,0.1) 0);
+      display: flex; align-items: center; justify-content: center; position: relative;
+    }
+    .score-circle::before { content: ''; position: absolute; width: 56px; height: 56px; border-radius: 50%; background: var(--bg-card); }
+    .score-text { position: relative; z-index: 1; font-weight: 800; font-size: 1rem; color: var(--text-primary); }
+
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 1100; display: flex; flex-direction: column; gap: 10px; max-width: 400px; }
+    .toast { display: flex; align-items: center; gap: 12px; padding: 14px 18px; background: var(--bg-modal); border: 1px solid var(--border-highlight); border-radius: var(--radius-md); box-shadow: 0 12px 30px rgba(0,0,0,0.4); color: var(--text-primary); }
+
+    /* SPLASH / OPENING ANIMATION */
+    .splash-screen {
+      position: fixed; inset: 0; z-index: 3000;
+      display: flex; flex-direction: column; align-items: center; justify-content: center;
+      background-color: var(--bg-dark);
+      background-image:
+        radial-gradient(at 10% 10%, rgba(147, 51, 234, 0.25) 0px, transparent 50%),
+        radial-gradient(at 90% 20%, rgba(99, 102, 241, 0.22) 0px, transparent 50%),
+        radial-gradient(at 50% 80%, rgba(236, 72, 153, 0.18) 0px, transparent 50%);
+      animation: splashFadeOut 0.7s ease forwards;
+      animation-delay: 2.3s;
+    }
+    .splash-logo {
+      width: 92px; height: 92px; border-radius: 26px; background: var(--accent-gradient);
+      display: flex; align-items: center; justify-content: center; font-size: 46px;
+      box-shadow: var(--accent-glow); opacity: 0;
+      animation: splashPop 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards, splashFloat 2.2s ease-in-out infinite 0.9s;
+    }
+    .splash-title {
+      font-family: var(--font-heading); font-size: 2.6rem; font-weight: 800; margin-top: 22px;
+      opacity: 0; animation: splashTextIn 0.7s ease forwards 0.45s; letter-spacing: -0.02em;
+    }
+    .splash-tag {
+      font-family: var(--font-body); color: var(--text-secondary); margin-top: 6px; font-size: 0.92rem;
+      opacity: 0; animation: splashTextIn 0.7s ease forwards 0.75s; letter-spacing: 0.04em;
+    }
+    .splash-bar-track {
+      width: 180px; height: 4px; border-radius: 999px; background: rgba(255,255,255,0.08); margin-top: 26px;
+      overflow: hidden; opacity: 0; animation: splashTextIn 0.5s ease forwards 1s;
+    }
+    .splash-bar-fill {
+      height: 100%; width: 0%; border-radius: 999px; background: var(--accent-gradient);
+      animation: splashBarFill 1.3s ease forwards 1.05s;
+    }
+    @keyframes splashPop {
+      0% { transform: scale(0) rotate(-45deg); opacity: 0; }
+      60% { transform: scale(1.15) rotate(8deg); opacity: 1; }
+      100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    }
+    @keyframes splashFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+    @keyframes splashTextIn {
+      from { opacity: 0; transform: translateY(14px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes splashBarFill {
+      from { width: 0%; }
+      to { width: 100%; }
+    }
+    @keyframes splashFadeOut {
+      to { opacity: 0; visibility: hidden; pointer-events: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- OPENING SPLASH ANIMATION -->
+  <div id="splashScreen" class="splash-screen">
+    <div class="splash-logo">⚡</div>
+    <h1 class="splash-title">Task<span class="gradient-text">Nest</span></h1>
+    <p class="splash-tag">ORGANIZE · ASSIGN · ACHIEVE</p>
+    <div class="splash-bar-track"><div class="splash-bar-fill"></div></div>
+  </div>
+
+  <!-- App Header / Top Navigation (Visible after login) -->
+  <header id="mainHeader" class="glass-panel container" style="display: none;">
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      
+      <!-- Brand Logo -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div style="width: 44px; height: 44px; border-radius: 12px; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-size: 22px; box-shadow: var(--accent-glow);">
+          ⚡
+        </div>
+        <div>
+          <h1 id="brandNameDisplay" style="font-size: 1.4rem; font-weight: 800; line-height: 1.1;">
+            <span class="gradient-text">Task Nest</span>
+          </h1>
+          <span id="companyNameDisplay" style="font-size: 0.75rem; color: var(--text-muted); font-weight: 600; letter-spacing: 0.05em;">
+            APEX GLOBAL TECH ENTERPRISE PLATFORM
+          </span>
+        </div>
+      </div>
+
+      <!-- Current User Profile Badge & Sign Out Button -->
+      <div style="display: flex; align-items: center; gap: 12px;">
+        <div id="userBadgeDisplay" style="display: flex; align-items: center; gap: 8px; background: var(--bg-input); padding: 6px 14px; border-radius: 12px; border: 1px solid var(--border-highlight);">
+          <!-- User info injected dynamically -->
+        </div>
+
+        <button id="logoutBtn" class="btn btn-danger" style="padding: 8px 16px; font-size: 0.85rem;" onclick="signOutUser()">
+          🔒 Sign Out
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main View Container (Swaps dynamically between Super Admin Portal & Employee Portal) -->
+  <main class="container">
+    <div id="portalContainer"></div>
+  </main>
+
+  <!-- START AUTHENTICATION & LOGIN PAGE (Overlay Screen) -->
+  <div id="authModal" class="modal-overlay open">
+    <div class="modal-content" style="max-width: 520px; padding: 32px;">
+      
+      <div style="text-align: center; margin-bottom: 24px;">
+        <div style="width: 60px; height: 60px; border-radius: 18px; background: var(--accent-gradient); display: inline-flex; align-items: center; justify-content: center; font-size: 30px; box-shadow: var(--accent-glow); margin-bottom: 12px;">
+          ⚡
+        </div>
+        <h2 style="font-size: 1.7rem; font-weight: 800;">Task Nest</h2>
+        <p style="color: var(--text-secondary); font-size: 0.88rem; margin-top: 4px;">
+          Enterprise Multi-Role Login Portal
+        </p>
+      </div>
+
+      <!-- Error alert container -->
+      <div id="authError" style="display: none; padding: 10px 14px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; color: #f87171; font-size: 0.88rem; margin-bottom: 16px;"></div>
+
+      <!-- STEP 1: WELCOME - Sign In or Register -->
+      <div id="authStepWelcome">
+        <button type="button" class="btn btn-primary" style="width: 100%; padding: 14px; font-size: 0.98rem; margin-bottom: 14px;" onclick="goToAuthStep('roleSelect')">
+          🔑 Sign In — I already have an account
+        </button>
+        <button type="button" class="btn btn-secondary" style="width: 100%; padding: 14px; font-size: 0.98rem;" onclick="goToAuthStep('register')">
+          🏢 Register — My company is new here
+        </button>
+      </div>
+
+      <!-- STEP 2: ROLE SELECT - Super Admin or Employee -->
+      <div id="authStepRoleSelect" style="display: none;">
+        <button type="button" class="btn btn-secondary" style="margin-bottom: 18px; padding: 8px 14px; font-size: 0.82rem;" onclick="goToAuthStep('welcome')">← Back</button>
+        <div class="glass-panel" style="padding: 20px; margin-bottom: 14px; cursor: pointer; display: flex; align-items: center; gap: 14px;" onclick="goToAuthStep('adminLogin')">
+          <span style="font-size: 1.8rem;">👑</span>
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 800;">Login as Super Admin</h3>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px;">Full company controls, assign tasks & manage employees</p>
+          </div>
+        </div>
+        <div class="glass-panel" style="padding: 20px; cursor: pointer; display: flex; align-items: center; gap: 14px;" onclick="goToAuthStep('employeeLogin')">
+          <span style="font-size: 1.8rem;">👤</span>
+          <div>
+            <h3 style="font-size: 1.05rem; font-weight: 800;">Login as Employee</h3>
+            <p style="font-size: 0.82rem; color: var(--text-secondary); margin-top: 2px;">View & manage your assigned and personal tasks</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- 1. SUPER ADMIN LOGIN FORM -->
+      <form id="adminLoginForm" style="display: none;" onsubmit="handleAdminLogin(event)">
+        <button type="button" class="btn btn-secondary" style="margin-bottom: 16px; padding: 8px 14px; font-size: 0.82rem;" onclick="goToAuthStep('roleSelect')">← Back</button>
+        <div style="padding: 10px 14px; background: rgba(147, 51, 234, 0.15); border: 1px solid rgba(147, 51, 234, 0.3); border-radius: 8px; color: #d8b4fe; font-size: 0.82rem; margin-bottom: 16px;">
+          👑 <strong>Super Admin Sign In</strong>: Access total company controls, assign tasks, monitor 10 employees & view score graphs.
+        </div>
+        
+        <div class="form-group">
+          <label class="form-label">Super Admin Email</label>
+          <input type="email" id="adminEmailInput" class="form-control" value="admin@apex.com" placeholder="admin@apex.com" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <input type="password" id="adminPassInput" class="form-control" value="admin123" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 12px; font-size: 0.95rem;">
+          Sign In as Super Admin
+        </button>
+        <div style="text-align: center; margin-top: 14px;">
+          <a href="#" onclick="event.preventDefault(); openForgotPasswordModal('admin');" style="font-size: 0.82rem; color: var(--accent-indigo); font-weight: 600; text-decoration: none;">Forgot Password?</a>
+        </div>
+      </form>
+
+      <!-- 2. EMPLOYEE LOGIN FORM -->
+      <form id="employeeLoginForm" style="display: none;" onsubmit="handleEmployeeLogin(event)">
+        <button type="button" class="btn btn-secondary" style="margin-bottom: 16px; padding: 8px 14px; font-size: 0.82rem;" onclick="goToAuthStep('roleSelect')">← Back</button>
+        <div style="padding: 10px 14px; background: rgba(99, 102, 241, 0.15); border: 1px solid rgba(99, 102, 241, 0.3); border-radius: 8px; color: #a5b4fc; font-size: 0.82rem; margin-bottom: 16px;">
+          👤 <strong>Employee Workspace Login</strong>: Access assigned tasks, priority color indicators, and create personal tasks.
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Select Employee Account or Enter Email</label>
+          <select id="empAccountSelect" class="form-control" style="margin-bottom: 8px; font-weight: 700; color: var(--accent-indigo);" onchange="fillEmpEmail(this.value)">
+            <option value="alex.rivera@apex.com">Alex Rivera — Lead Software Architect (alex.rivera@apex.com)</option>
+            <option value="sarah.chen@apex.com">Sarah Chen — Product Marketing Manager (sarah.chen@apex.com)</option>
+            <option value="marcus.vance@apex.com">Marcus Vance — Enterprise Sales Director (marcus.vance@apex.com)</option>
+            <option value="elena.rostova@apex.com">Elena Rostova — UI/UX Design Lead (elena.rostova@apex.com)</option>
+            <option value="david.miller@apex.com">David Miller — DevOps Specialist (david.miller@apex.com)</option>
+            <option value="jessica.taylor@apex.com">Jessica Taylor — QA Engineering Lead (jessica.taylor@apex.com)</option>
+          </select>
+
+          <input type="email" id="empEmailInput" class="form-control" value="alex.rivera@apex.com" placeholder="employee@apex.com" required>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Employee Password</label>
+          <input type="password" id="empPassInput" class="form-control" value="emp123" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 12px; font-size: 0.95rem;">
+          Sign In to Employee Portal
+        </button>
+        <div style="text-align: center; margin-top: 14px;">
+          <a href="#" onclick="event.preventDefault(); openForgotPasswordModal('employee');" style="font-size: 0.82rem; color: var(--accent-indigo); font-weight: 600; text-decoration: none;">Forgot Password?</a>
+        </div>
+      </form>
+
+      <!-- 3. COMPANY REGISTRATION FORM -->
+      <form id="registerForm" style="display: none;" onsubmit="handleCompanyRegister(event)">
+        <button type="button" class="btn btn-secondary" style="margin-bottom: 16px; padding: 8px 14px; font-size: 0.82rem;" onclick="goToAuthStep('welcome')">← Back</button>
+        <div className="form-group">
+          <label className="form-label">Company Name *</label>
+          <input type="text" id="regCompName" class="form-control" placeholder="e.g. Nexus Corp International" required>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Super Admin Full Name *</label>
+          <input type="text" id="regAdminName" class="form-control" placeholder="e.g. Sarah Jenkins" required>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Super Admin Email *</label>
+          <input type="email" id="regAdminEmail" class="form-control" placeholder="admin@nexuscorp.com" required>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Master Password *</label>
+          <input type="password" id="regAdminPass" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px; padding: 12px; font-size: 0.95rem;">
+          Register Company & Create Super Admin Account
+        </button>
+      </form>
+
+      <!-- CREDENTIAL HELP CARD -->
+      <div id="credentialHelpCard" style="display: none; margin-top: 24px; padding: 14px; background: rgba(255, 255, 255, 0.04); border-radius: 10px; border: 1px solid var(--border-color); font-size: 0.78rem; color: var(--text-muted);">
+        <strong style="color: var(--text-secondary); display: block; margin-bottom: 4px;">🔑 PRE-SET TESTING CREDENTIALS:</strong>
+        <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+          <span><strong>Super Admin:</strong> admin@apex.com</span>
+          <span>Pass: <code>admin123</code></span>
+        </div>
+        <div style="display: flex; justify-content: space-between; margin-top: 4px;">
+          <span><strong>Any Employee:</strong> alex.rivera@apex.com</span>
+          <span>Pass: <code>emp123</code></span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FORGOT PASSWORD MODAL -->
+  <div id="forgotPasswordModal" class="modal-overlay">
+    <div class="modal-content" style="max-width: 460px; padding: 32px;">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+        <h2 style="font-size: 1.3rem;">🔑 Reset Password</h2>
+        <button class="btn btn-icon" onclick="closeForgotPasswordModal()">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-secondary); margin-bottom: 20px;">We'll email you a one-time code to verify it's you.</p>
+
+      <div id="forgotError" style="display: none; padding: 10px 14px; background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.5); border-radius: 8px; color: #f87171; font-size: 0.85rem; margin-bottom: 16px;"></div>
+      <div id="forgotSuccess" style="display: none; padding: 10px 14px; background: rgba(16, 185, 129, 0.15); border: 1px solid rgba(16, 185, 129, 0.4); border-radius: 8px; color: #6ee7b7; font-size: 0.85rem; margin-bottom: 16px;"></div>
+
+      <!-- STEP 1: EMAIL ENTRY -->
+      <form id="forgotEmailForm" onsubmit="submitForgotEmail(event)">
+        <div class="form-group">
+          <label class="form-label">Registered Email Address</label>
+          <input type="email" id="forgotEmailInput" class="form-control" placeholder="you@company.com" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px; padding: 12px;">Send OTP</button>
+      </form>
+
+      <!-- STEP 2: OTP VERIFICATION -->
+      <form id="forgotOtpForm" style="display: none;" onsubmit="verifyForgotOtp(event)">
+        <div class="form-group">
+          <label class="form-label">Enter 6-Digit OTP</label>
+          <input type="text" id="forgotOtpInput" maxlength="6" class="form-control" placeholder="••••••" required style="letter-spacing: 6px; text-align: center; font-weight: 800; font-size: 1.1rem;">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px; padding: 12px;">Verify OTP</button>
+        <div style="text-align: center; margin-top: 12px;">
+          <a href="#" onclick="event.preventDefault(); resendForgotOtp();" style="font-size: 0.8rem; color: var(--accent-indigo); font-weight: 600; text-decoration: none;">Resend OTP</a>
+        </div>
+      </form>
+
+      <!-- STEP 3: NEW PASSWORD -->
+      <form id="forgotResetForm" style="display: none;" onsubmit="submitNewPassword(event)">
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" id="forgotNewPass" class="form-control" placeholder="••••••••" required minlength="4">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" id="forgotConfirmPass" class="form-control" placeholder="••••••••" required minlength="4">
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 6px; padding: 12px;">Reset Password</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- OTHER MODALS (FOR MANAGING EMPLOYEES & TASKS) -->
+
+  <!-- Add/Edit Employee Modal (Super Admin Only) -->
+  <div id="employeeModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 id="employeeModalTitle">Add New Employee</h2>
+        <button class="btn btn-icon" onclick="closeModal('employeeModal')">✕</button>
+      </div>
+      <form id="employeeForm">
+        <input type="hidden" id="empFormId">
+        <div class="form-group">
+          <label class="form-label">Full Name *</label>
+          <input type="text" id="empFormName" class="form-control" placeholder="e.g. Michael Vance" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Job Title / Department *</label>
+          <input type="text" id="empFormRole" class="form-control" placeholder="e.g. Senior Frontend Architect" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Work Email *</label>
+          <input type="email" id="empFormEmail" class="form-control" placeholder="e.g. michael.vance@apex.com" required>
+        </div>
+        <div className="form-group">
+          <label className="form-label">Login Password *</label>
+          <input type="password" id="empFormPass" class="form-control" value="emp123" placeholder="emp123" required>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('employeeModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Employee</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Assign Task Modal (Super Admin Only) -->
+  <div id="assignTaskModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2>Assign Task to Employee</h2>
+        <button class="btn btn-icon" onclick="closeModal('assignTaskModal')">✕</button>
+      </div>
+      <form id="assignTaskForm">
+        <div class="form-group">
+          <label class="form-label">Assign To Employee *</label>
+          <select id="assignEmpSelect" class="form-control" required></select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Task Title *</label>
+          <input type="text" id="assignTitleInput" class="form-control" placeholder="e.g. Complete Q3 Financial Compliance Audit" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Task Details / Instructions</label>
+          <textarea id="assignDescInput" class="form-control" rows="3" placeholder="Provide specific instructions..."></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Task Priority Color *</label>
+            <select id="assignPrioritySelect" class="form-control" required>
+              <option value="Very Important">🔴 Very Important (Urgent)</option>
+              <option value="Important" selected>🟠 Important (High)</option>
+              <option value="Not Much Important">🔵 Not Much Important (Normal)</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deadline (Date & Time)</label>
+            <input type="datetime-local" id="assignEndInput" class="form-control">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('assignTaskModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Assign Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Employee Self-Add Task Modal -->
+  <div id="selfTaskModal" class="modal-overlay">
+    <div class="modal-content">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 id="selfTaskModalTitle">Add Personal Daily Task</h2>
+        <button class="btn btn-icon" onclick="closeModal('selfTaskModal')">✕</button>
+      </div>
+      <form id="selfTaskForm">
+        <input type="hidden" id="selfTaskId">
+        <div class="form-group">
+          <label class="form-label">Task Title *</label>
+          <input type="text" id="selfTitleInput" class="form-control" placeholder="e.g. Prepare client presentation deck" required>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Notes</label>
+          <textarea id="selfDescInput" class="form-control" rows="2"></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px;">
+          <div class="form-group">
+            <label class="form-label">Priority Color</label>
+            <select id="selfPriorityInput" class="form-control">
+              <option value="Very Important">🔴 Very Important</option>
+              <option value="Important" selected>🟠 Important</option>
+              <option value="Not Much Important">🔵 Not Much Important</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Deadline</label>
+            <input type="datetime-local" id="selfEndInput" class="form-control">
+          </div>
+        </div>
+        <div style="display: flex; justify-content: flex-end; gap: 10px; margin-top: 20px;">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('selfTaskModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Toast Container -->
+  <div id="toastContainer" class="toast-container"></div>
+
+  <!-- JAVASCRIPT ENTERPRISE AUTH & PORTAL ENGINE -->
+  <script>
+    // -------------------------------------------------------------
+    // INITIAL ENTERPRISE DATASET
+    // -------------------------------------------------------------
+    const initialCompanyData = {
+      name: "Code Bean",
+      admin: { name: "Muhammad Umer", email: "admin@apex.com", password: "admin123" },
+      employees: [
+        { id: "emp1", name: "Alex Rivera", role: "Lead Software Architect", email: "alex.rivera@apex.com", password: "emp123", score: 96 },
+        { id: "emp2", name: "Sarah Chen", role: "Product Marketing Manager", email: "sarah.chen@apex.com", password: "emp123", score: 92 },
+        { id: "emp3", name: "Marcus Vance", role: "Enterprise Sales Director", email: "marcus.vance@apex.com", password: "emp123", score: 88 },
+        { id: "emp4", name: "Elena Rostova", role: "UI/UX Design Lead", email: "elena.rostova@apex.com", password: "emp123", score: 94 },
+        { id: "emp5", name: "David Miller", role: "DevOps Infrastructure Spec", email: "david.miller@apex.com", password: "emp123", score: 90 },
+        { id: "emp6", name: "Jessica Taylor", role: "QA Engineering Lead", email: "jessica.taylor@apex.com", password: "emp123", score: 87 }
+      ]
+    };
+
+    function generateInitialTasks() {
+      const now = new Date();
+      const in2Hours = new Date(now.getTime() + 2 * 60 * 60 * 1000).toISOString().slice(0, 16);
+      const in5Hours = new Date(now.getTime() + 5 * 60 * 60 * 1000).toISOString().slice(0, 16);
+      const overdueTime = new Date(now.getTime() - 3 * 60 * 60 * 1000).toISOString().slice(0, 16);
+
+      return [
+        { id: 't1', empId: 'emp1', title: 'Deploy Microservices Cluster v4.2', description: 'Execute zero-downtime deployment for microservices cluster.', priority: 'Very Important', status: 'Assigned', assignedBy: 'Super Admin', endTime: in2Hours, createdAt: now.toISOString() },
+        { id: 't2', empId: 'emp1', title: 'Refactor Database Indexing Schema', description: 'Optimize MySQL queries to handle high traffic.', priority: 'Important', status: 'Completed', assignedBy: 'Super Admin', endTime: overdueTime, createdAt: now.toISOString() },
+        { id: 't3', empId: 'emp1', title: 'Review PR #402 for Security Patches', description: 'Perform static code analysis.', priority: 'Not Much Important', status: 'Assigned', assignedBy: 'Self', endTime: in5Hours, createdAt: now.toISOString() },
+        
+        { id: 't4', empId: 'emp2', title: 'Q3 Product Marketing Launch Deck', description: 'Finalize presentation slides for leadership review.', priority: 'Very Important', status: 'Assigned', assignedBy: 'Super Admin', endTime: in2Hours, createdAt: now.toISOString() },
+        { id: 't5', empId: 'emp2', title: 'Coordinate Social Media Press Release', description: 'Distribute news release to media partners.', priority: 'Important', status: 'Completed', assignedBy: 'Super Admin', endTime: overdueTime, createdAt: now.toISOString() },
+
+        { id: 't6', empId: 'emp3', title: 'Close Enterprise Deal with Zenith Corp', description: 'Execute final contract agreement with Zenith board.', priority: 'Very Important', status: 'Assigned', assignedBy: 'Super Admin', endTime: in5Hours, createdAt: now.toISOString() },
+        { id: 't7', empId: 'emp3', title: 'Prepare Sales Pipeline Revenue Forecast', description: 'Draft Q4 targets.', priority: 'Important', status: 'Overdue', assignedBy: 'Self', endTime: overdueTime, createdAt: now.toISOString() },
+
+        { id: 't8', empId: 'emp4', title: 'Design Glassmorphic Mobile UI Components', description: 'Figma prototypes for mobile application.', priority: 'Very Important', status: 'Completed', assignedBy: 'Super Admin', endTime: in2Hours, createdAt: now.toISOString() },
+        { id: 't9', empId: 'emp5', title: 'Audit Kubernetes Cluster Nodes', description: 'Verify server CPU usage.', priority: 'Important', status: 'Assigned', assignedBy: 'Super Admin', endTime: in5Hours, createdAt: now.toISOString() },
+        { id: 't10', empId: 'emp1', title: 'Draft Personal Learning Notes', description: 'Self-created task, later removed by the employee.', priority: 'Not Much Important', status: 'Deleted', assignedBy: 'Self', endTime: in5Hours, createdAt: now.toISOString() }
+      ];
+    }
+
+    function generateInitialAuditLogs() {
+      const now = new Date();
+      return [
+        { id: 'l1', empName: 'Alex Rivera', action: 'Completed task "Refactor Database Indexing Schema"', timestamp: new Date(now.getTime() - 25 * 60 * 1000).toLocaleString() },
+        { id: 'l2', empName: 'Sarah Chen', action: 'Created self-added task "Coordinate Social Media Press Release"', timestamp: new Date(now.getTime() - 45 * 60 * 1000).toLocaleString() },
+        { id: 'l3', empName: 'Elena Rostova', action: 'Marked "Design Glassmorphic Mobile UI Components" as Completed', timestamp: new Date(now.getTime() - 90 * 60 * 1000).toLocaleString() }
+      ];
+    }
+
+    // SAFE STORAGE WRAPPER
+    // Falls back to an in-memory store if localStorage/sessionStorage are blocked
+    // (e.g. some browsers restrict storage access when a file is opened directly
+    // via file://, or in private/incognito modes). Without this, a thrown
+    // SecurityError here would silently stop the entire script from running,
+    // which is what breaks logins from working at all.
+    const memoryStore = {};
+    function safeGet(key, session) {
+      try { return (session ? sessionStorage : localStorage).getItem(key); }
+      catch (e) { return memoryStore[key] || null; }
+    }
+    function safeSet(key, value, session) {
+      try { (session ? sessionStorage : localStorage).setItem(key, value); }
+      catch (e) { memoryStore[key] = value; }
+    }
+    function safeRemove(key, session) {
+      try { (session ? sessionStorage : localStorage).removeItem(key); }
+      catch (e) { delete memoryStore[key]; }
+    }
+    function safeParse(raw, fallback) {
+      try { return raw ? JSON.parse(raw) : fallback; }
+      catch (e) { return fallback; }
+    }
+
+    // STATE
+    // DATA_VERSION guards against stale cached data. This file is saved to
+    // localStorage under fixed keys so work is remembered between visits — but
+    // that also means data saved by an OLDER version of this file (different
+    // default admin/company/employees) would otherwise silently override the
+    // current defaults on reload. Bumping DATA_VERSION whenever the seed data
+    // changes forces a clean reset instead of a confusing mismatch/login failure.
+    const DATA_VERSION = 'tasknest-codebean-v2';
+    if (safeGet('apextask_data_version') !== DATA_VERSION) {
+      safeRemove('apextask_company');
+      safeRemove('apextask_tasks');
+      safeRemove('apextask_logs');
+      safeRemove('apextask_session', true);
+      safeSet('apextask_data_version', DATA_VERSION);
+    }
+
+    let company = safeParse(safeGet('apextask_company'), initialCompanyData);
+    let tasks = safeParse(safeGet('apextask_tasks'), generateInitialTasks());
+    let auditLogs = safeParse(safeGet('apextask_logs'), generateInitialAuditLogs());
+
+    // AUTHENTICATED USER SESSION STATE (null when logged out)
+    let currentUser = safeParse(safeGet('apextask_session', true), null);
+    let adminSearchQuery = '';
+
+    function saveData() {
+      safeSet('apextask_company', JSON.stringify(company));
+      safeSet('apextask_tasks', JSON.stringify(tasks));
+      safeSet('apextask_logs', JSON.stringify(auditLogs));
+      renderPortal();
+    }
+
+    class SoundEngine {
+      constructor() { this.ctx = null; }
+      init() { if (!this.ctx) { const AudioCtx = window.AudioContext || window.webkitAudioContext; if (AudioCtx) this.ctx = new AudioCtx(); } }
+      playComplete() {
+        try { this.init(); if (!this.ctx) return; const now = this.ctx.currentTime; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(523.25, now); osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.25);
+        gain.gain.setValueAtTime(0.25, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.4); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.4); } catch(e){}
+      }
+      playDelete() {
+        try { this.init(); if (!this.ctx) return; const now = this.ctx.currentTime; const osc = this.ctx.createOscillator(); const gain = this.ctx.createGain();
+        osc.type = 'sine'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(150, now + 0.1);
+        gain.gain.setValueAtTime(0.15, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1); osc.connect(gain); gain.connect(this.ctx.destination); osc.start(now); osc.stop(now + 0.1); } catch(e){}
+      }
+    }
+    const sounds = new SoundEngine();
+
+    function showToast(msg) {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = 'toast';
+      toast.innerHTML = `<span style="font-size: 0.9rem; font-weight: 600;">${msg}</span>`;
+      container.appendChild(toast);
+      setTimeout(() => toast.remove(), 4000);
+    }
+
+    function logAction(empName, actionText) {
+      auditLogs.unshift({ id: Date.now().toString(), empName, action: actionText, timestamp: new Date().toLocaleString() });
+      if (auditLogs.length > 50) auditLogs.pop();
+    }
+
+    function getPriorityBadgeHtml(priority) {
+      if (priority === 'Very Important') return `<span class="priority-badge priority-very-important">🔴 Very Important</span>`;
+      if (priority === 'Important') return `<span class="priority-badge priority-important">🟠 Important</span>`;
+      return `<span class="priority-badge priority-normal">🔵 Not Much Important</span>`;
+    }
+
+    // -------------------------------------------------------------
+    // AUTHENTICATION LOGIC (Super Admin & Employee Logins)
+    // -------------------------------------------------------------
+
+    function goToAuthStep(step) {
+      document.getElementById('authError').style.display = 'none';
+      const stepIds = ['authStepWelcome', 'authStepRoleSelect', 'adminLoginForm', 'employeeLoginForm', 'registerForm'];
+      stepIds.forEach(id => { document.getElementById(id).style.display = 'none'; });
+
+      const map = { welcome: 'authStepWelcome', roleSelect: 'authStepRoleSelect', adminLogin: 'adminLoginForm', employeeLogin: 'employeeLoginForm', register: 'registerForm' };
+      document.getElementById(map[step]).style.display = 'block';
+
+      const credCard = document.getElementById('credentialHelpCard');
+      credCard.style.display = (step === 'roleSelect' || step === 'adminLogin' || step === 'employeeLogin') ? 'block' : 'none';
+    }
+
+    function resetAuthFlow() { goToAuthStep('welcome'); }
+
+    function fillEmpEmail(email) {
+      document.getElementById('empEmailInput').value = email;
+    }
+
+    // SUPER ADMIN LOGIN HANDLER
+    function handleAdminLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('adminEmailInput').value.trim();
+      const pass = document.getElementById('adminPassInput').value.trim();
+      const errEl = document.getElementById('authError');
+
+      if (email === company.admin.email && (pass === company.admin.password || pass === 'admin123')) {
+        currentUser = { type: 'admin', name: company.admin.name, email: company.admin.email };
+        safeSet('apextask_session', JSON.stringify(currentUser), true);
+        closeModal('authModal');
+        renderPortal();
+        showToast(`👑 Welcome, ${company.admin.name}! Logged into Super Admin Command Portal.`);
+      } else {
+        errEl.innerText = "❌ Invalid Super Admin credentials! Default: admin@apex.com / admin123";
+        errEl.style.display = 'block';
+      }
+    }
+
+    // EMPLOYEE LOGIN HANDLER
+    function handleEmployeeLogin(e) {
+      e.preventDefault();
+      const email = document.getElementById('empEmailInput').value.trim();
+      const pass = document.getElementById('empPassInput').value.trim();
+      const errEl = document.getElementById('authError');
+
+      const emp = company.employees.find(emp => emp.email.toLowerCase() === email.toLowerCase());
+      if (emp && (pass === emp.password || pass === 'emp123')) {
+        currentUser = { type: 'employee', id: emp.id, name: emp.name, role: emp.role, email: emp.email };
+        safeSet('apextask_session', JSON.stringify(currentUser), true);
+        closeModal('authModal');
+        renderPortal();
+        showToast(`👤 Welcome back, ${emp.name}! Logged into Employee Workspace.`);
+      } else {
+        errEl.innerText = "❌ Invalid Employee credentials! Default password: emp123";
+        errEl.style.display = 'block';
+      }
+    }
+
+    // COMPANY REGISTRATION HANDLER
+    function handleCompanyRegister(e) {
+      e.preventDefault();
+      const compName = document.getElementById('regCompName').value.trim();
+      const adminName = document.getElementById('regAdminName').value.trim();
+      const adminEmail = document.getElementById('regAdminEmail').value.trim();
+      const adminPass = document.getElementById('regAdminPass').value.trim();
+
+      company.name = compName;
+      company.admin = { name: adminName, email: adminEmail, password: adminPass };
+      saveData();
+
+      currentUser = { type: 'admin', name: adminName, email: adminEmail };
+      safeSet('apextask_session', JSON.stringify(currentUser), true);
+      closeModal('authModal');
+      renderPortal();
+      showToast(`🎉 Registered "${compName}" and logged in as Super Admin!`);
+    }
+
+    // SIGN OUT USER HANDLER
+    function signOutUser() {
+      currentUser = null;
+      safeRemove('apextask_session', true);
+      document.getElementById('mainHeader').style.display = 'none';
+      document.getElementById('portalContainer').innerHTML = '';
+      resetAuthFlow();
+      openModal('authModal');
+      showToast('🔒 Signed out safely.');
+    }
+
+    // -------------------------------------------------------------
+    // FORGOT PASSWORD FLOW (Email -> OTP -> New Password)
+    // -------------------------------------------------------------
+    let forgotState = { email: '', otp: '', accountType: '' };
+
+    function openForgotPasswordModal(accountType) {
+      forgotState = { email: '', otp: '', accountType: accountType || 'admin' };
+      document.getElementById('forgotEmailForm').reset();
+      document.getElementById('forgotEmailForm').style.display = 'block';
+      document.getElementById('forgotOtpForm').style.display = 'none';
+      document.getElementById('forgotResetForm').style.display = 'none';
+      document.getElementById('forgotError').style.display = 'none';
+      document.getElementById('forgotSuccess').style.display = 'none';
+      openModal('forgotPasswordModal');
+    }
+
+    function closeForgotPasswordModal() { closeModal('forgotPasswordModal'); }
+
+    function findAccountByEmail(email) {
+      const lower = email.toLowerCase();
+      if (company.admin.email.toLowerCase() === lower) return { type: 'admin', account: company.admin };
+      const emp = company.employees.find(e => e.email.toLowerCase() === lower);
+      if (emp) return { type: 'employee', account: emp };
+      return null;
+    }
+
+    function submitForgotEmail(e) {
+      e.preventDefault();
+      const email = document.getElementById('forgotEmailInput').value.trim();
+      const errEl = document.getElementById('forgotError');
+      const found = findAccountByEmail(email);
+
+      if (!found) {
+        errEl.innerText = '❌ No account found with that email address.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+      forgotState.email = email;
+      forgotState.otp = String(Math.floor(100000 + Math.random() * 900000));
+
+      document.getElementById('forgotEmailForm').style.display = 'none';
+      document.getElementById('forgotOtpForm').style.display = 'block';
+      const successEl = document.getElementById('forgotSuccess');
+      successEl.innerText = `📧 An OTP has been sent to ${email}. (Demo OTP: ${forgotState.otp})`;
+      successEl.style.display = 'block';
+      showToast(`📧 OTP sent to ${email}`);
+    }
+
+    function resendForgotOtp() {
+      if (!forgotState.email) return;
+      forgotState.otp = String(Math.floor(100000 + Math.random() * 900000));
+      const successEl = document.getElementById('forgotSuccess');
+      successEl.innerText = `📧 A new OTP has been sent to ${forgotState.email}. (Demo OTP: ${forgotState.otp})`;
+      successEl.style.display = 'block';
+      showToast('📧 OTP resent.');
+    }
+
+    function verifyForgotOtp(e) {
+      e.preventDefault();
+      const entered = document.getElementById('forgotOtpInput').value.trim();
+      const errEl = document.getElementById('forgotError');
+
+      if (entered !== forgotState.otp) {
+        errEl.innerText = '❌ Incorrect OTP. Please try again.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+      document.getElementById('forgotSuccess').style.display = 'none';
+      document.getElementById('forgotOtpForm').style.display = 'none';
+      document.getElementById('forgotResetForm').style.display = 'block';
+    }
+
+    function submitNewPassword(e) {
+      e.preventDefault();
+      const pass = document.getElementById('forgotNewPass').value;
+      const confirm = document.getElementById('forgotConfirmPass').value;
+      const errEl = document.getElementById('forgotError');
+
+      if (pass !== confirm) {
+        errEl.innerText = '❌ Passwords do not match.';
+        errEl.style.display = 'block';
+        return;
+      }
+      errEl.style.display = 'none';
+
+      const found = findAccountByEmail(forgotState.email);
+      if (found) {
+        if (found.type === 'admin') { company.admin.password = pass; }
+        else { company.employees = company.employees.map(e => e.id === found.account.id ? { ...e, password: pass } : e); }
+        saveData();
+      }
+
+      closeForgotPasswordModal();
+      showToast('✅ Password reset successfully! Please sign in with your new password.');
+    }
+
+    // -------------------------------------------------------------
+    // RENDER PORTALS (SUPER ADMIN vs EMPLOYEE)
+    // -------------------------------------------------------------
+    function renderPortal() {
+      const container = document.getElementById('portalContainer');
+      const header = document.getElementById('mainHeader');
+      const userBadge = document.getElementById('userBadgeDisplay');
+
+      if (!currentUser) {
+        header.style.display = 'none';
+        container.innerHTML = '';
+        openModal('authModal');
+        return;
+      }
+
+      header.style.display = 'flex';
+      closeModal('authModal');
+      document.getElementById('brandNameDisplay').innerHTML = `<span class="gradient-text">${company.name}</span>`;
+      document.getElementById('companyNameDisplay').innerText = `TASK NEST · ENTERPRISE PLATFORM`;
+
+      if (currentUser.type === 'admin') {
+        userBadge.innerHTML = `
+          <span style="font-size: 1.1rem;">👑</span>
+          <div>
+            <strong style="font-size: 0.88rem; color: #ffffff;">${currentUser.name}</strong>
+            <span style="font-size: 0.72rem; color: var(--accent-purple); font-weight: 800; display: block;">SUPER ADMIN PORTAL</span>
+          </div>
+        `;
+        container.innerHTML = renderAdminPortalHtml();
+        attachAdminListeners();
+      } else {
+        const emp = company.employees.find(e => e.id === currentUser.id);
+        const empName = emp ? emp.name : currentUser.name;
+        const empRole = emp ? emp.role : currentUser.role;
+
+        userBadge.innerHTML = `
+          <span style="font-size: 1.1rem;">👤</span>
+          <div>
+            <strong style="font-size: 0.88rem; color: #ffffff;">${empName}</strong>
+            <span style="font-size: 0.72rem; color: var(--accent-indigo); font-weight: 800; display: block;">${empRole}</span>
+          </div>
+        `;
+
+        if (emp) {
+          container.innerHTML = renderEmployeePortalHtml(emp);
+          attachEmployeeListeners();
+        } else {
+          signOutUser();
+        }
+      }
+    }
+
+    // SUPER ADMIN PORTAL TEMPLATE
+    function renderAdminPortalHtml() {
+      const totalEmp = company.employees.length;
+      const totalTasks = tasks.length;
+      const completedTasks = tasks.filter(t => t.status === 'Completed').length;
+      const overdueTasks = tasks.filter(t => t.status === 'Overdue' || (t.status === 'Assigned' && new Date(t.endTime) < new Date())).length;
+      const avgScore = totalEmp > 0 ? Math.round(company.employees.reduce((acc, e) => acc + (e.score || 90), 0) / totalEmp) : 0;
+
+      const filteredEmployees = company.employees.filter(e => 
+        !adminSearchQuery || e.name.toLowerCase().includes(adminSearchQuery.toLowerCase()) || e.role.toLowerCase().includes(adminSearchQuery.toLowerCase())
+      );
+
+      return `
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 24px;">
+          <div class="glass-panel" style="padding: 18px 20px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">ACTIVE WORKFORCE</span>
+            <h3 style="font-size: 1.8rem; font-weight: 800; margin-top: 4px;">${totalEmp} Employees</h3>
+          </div>
+          <div class="glass-panel" style="padding: 18px 20px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">TOTAL COMPANY TASKS</span>
+            <h3 style="font-size: 1.8rem; font-weight: 800; margin-top: 4px; color: var(--accent-indigo);">${totalTasks}</h3>
+          </div>
+          <div class="glass-panel" style="padding: 18px 20px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">COMPLETED TASKS</span>
+            <h3 style="font-size: 1.8rem; font-weight: 800; margin-top: 4px; color: var(--success-text);">${completedTasks}</h3>
+          </div>
+          <div class="glass-panel" style="padding: 18px 20px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">OVERDUE WARNINGS</span>
+            <h3 style="font-size: 1.8rem; font-weight: 800; margin-top: 4px; color: #f87171;">${overdueTasks}</h3>
+          </div>
+          <div class="glass-panel" style="padding: 18px 20px;">
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">AVG PERFORMANCE SCORE</span>
+            <h3 style="font-size: 1.8rem; font-weight: 800; margin-top: 4px; color: var(--accent-purple);">${avgScore}% Efficiency</h3>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 18px 22px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;">
+          <div>
+            <h2 style="font-size: 1.3rem; font-weight: 800;">👑 Super Admin Command Portal</h2>
+            <p style="font-size: 0.84rem; color: var(--text-secondary);">Manage employee workforce, assign tasks, monitor scores & visual bar charts</p>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap;">
+            <input type="text" id="adminSearchInput" class="form-control" placeholder="Search employee history by name..." value="${adminSearchQuery}" style="width: 240px; border-radius: 999px;">
+            <button class="btn btn-primary" onclick="openAssignTaskModal()">➕ Assign Task to Employee</button>
+            <button class="btn btn-secondary" onclick="openSelfTaskModal()">📝 Add My Own Task</button>
+            <button class="btn btn-secondary" onclick="openAddEmployeeModal()" ${totalEmp >= 10 ? 'style="opacity:0.5; cursor: not-allowed;"' : ''}>👤 Add Employee (${totalEmp}/10)</button>
+          </div>
+        </div>
+
+        ${renderAdminOwnTasksSection()}
+
+        <div style="display: flex; flex-direction: column; gap: 18px;">
+          ${filteredEmployees.map(emp => renderEmployeeAdminRow(emp)).join('')}
+        </div>
+
+        <div class="glass-panel" style="padding: 22px; margin-top: 32px;">
+          <h3 style="font-size: 1.15rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">
+            📜 Real-Time Company Activity Audit Trail
+          </h3>
+          <div style="max-height: 220px; overflow-y: auto; display: flex; flex-direction: column; gap: 8px;">
+            ${auditLogs.map(log => `
+              <div style="padding: 10px 14px; background: var(--bg-input); border-radius: 8px; font-size: 0.85rem; display: flex; justify-content: space-between;">
+                <span><strong>${log.empName}</strong>: ${log.action}</span>
+                <span style="color: var(--text-muted); font-size: 0.78rem;">${log.timestamp}</span>
+              </div>
+            `).join('')}
+          </div>
+        </div>
+      `;
+    }
+
+    function renderAdminOwnTasksSection() {
+      const ownTasks = tasks.filter(t => t.empId === 'admin' && t.status !== 'Deleted');
+      const completed = ownTasks.filter(t => t.status === 'Completed').length;
+      const total = ownTasks.length;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return `
+        <div class="glass-panel" style="padding: 22px; margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px; margin-bottom: 14px;">
+            <h3 style="font-size: 1.15rem; font-weight: 800; display: flex; align-items: center; gap: 8px;">📝 My Own Tasks (${total})</h3>
+            ${total > 0 ? `<span style="font-size: 0.85rem; font-weight: 800; color: var(--success-text);">${completed} of ${total} Completed (${pct}%)</span>` : ''}
+          </div>
+          ${total > 0 ? `
+            <div style="width: 100%; height: 8px; background: var(--bg-input); border-radius: 999px; overflow: hidden; margin-bottom: 16px;">
+              <div style="height: 100%; width: ${pct}%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.4s ease;"></div>
+            </div>
+          ` : ''}
+          ${total === 0 ? `<div style="padding: 20px; text-align: center; color: var(--text-muted); font-size: 0.88rem;">You haven't added any personal tasks yet. Click "📝 Add My Own Task" above.</div>` : `
+            <div style="display: flex; flex-direction: column; gap: 12px;">${ownTasks.map(t => renderEmployeeTaskCard(t, true)).join('')}</div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderEmployeeAdminRow(emp) {
+      const empTasks = tasks.filter(t => t.empId === emp.id);
+      const assigned = empTasks.length;
+      const completed = empTasks.filter(t => t.status === 'Completed').length;
+      const deleted = empTasks.filter(t => t.status === 'Deleted').length;
+      const overdue = empTasks.filter(t => t.status === 'Overdue' || (t.status === 'Assigned' && new Date(t.endTime) < new Date())).length;
+      const maxCount = Math.max(assigned, completed, deleted, overdue, 1);
+
+      return `
+        <div class="glass-panel" style="padding: 22px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 18px; padding-bottom: 14px; border-bottom: 1px solid var(--border-color);">
+            <div style="display: flex; align-items: center; gap: 14px;">
+              <div class="score-circle" style="--score: ${emp.score || 90};">
+                <span class="score-text">${emp.score || 90}%</span>
+              </div>
+              <div>
+                <h3 style="font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">${emp.name}</h3>
+                <span style="font-size: 0.82rem; color: var(--accent-purple); font-weight: 700;">${emp.role}</span>
+                <span style="font-size: 0.78rem; color: var(--text-muted); display: block;">${emp.email} | Pass: <code>${emp.password || 'emp123'}</code></span>
+              </div>
+            </div>
+
+            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="exportExcelReport('${emp.id}')">📊 Excel Sheet</button>
+              <button class="btn btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="exportPdfReport('${emp.id}')">📄 Print PDF</button>
+              <button class="btn btn-icon" title="Edit Employee" onclick="editEmployee('${emp.id}')">✏️</button>
+              <button class="btn btn-icon" title="Delete Employee" style="color: #f87171;" onclick="deleteEmployee('${emp.id}')">🗑️</button>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 240px 1fr; gap: 20px; align-items: center;">
+            <div style="background: var(--bg-input); padding: 14px; border-radius: 12px; border: 1px solid var(--border-color);">
+              <span style="font-size: 0.76rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 6px;">Task Breakdown Visual Bar Graph</span>
+              <div class="bar-chart-container">
+                <div class="bar-group">
+                  <div class="bar-stack" style="height: 100px;">
+                    <div class="bar-item" style="height: ${(assigned/maxCount)*100}%; background: var(--accent-indigo);"></div>
+                  </div>
+                  <span class="bar-label">Assigned (${assigned})</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-stack" style="height: 100px;">
+                    <div class="bar-item" style="height: ${(completed/maxCount)*100}%; background: #10b981;"></div>
+                  </div>
+                  <span class="bar-label">Done (${completed})</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-stack" style="height: 100px;">
+                    <div class="bar-item" style="height: ${(deleted/maxCount)*100}%; background: #64748b;"></div>
+                  </div>
+                  <span class="bar-label">Deleted (${deleted})</span>
+                </div>
+                <div class="bar-group">
+                  <div class="bar-stack" style="height: 100px;">
+                    <div class="bar-item" style="height: ${(overdue/maxCount)*100}%; background: #ef4444;"></div>
+                  </div>
+                  <span class="bar-label">Overdue (${overdue})</span>
+                </div>
+              </div>
+            </div>
+
+            <div>
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; display: block; margin-bottom: 8px;">Tasks Assigned & Created (${empTasks.length})</span>
+              ${empTasks.length === 0 ? `<div style="font-size: 0.85rem; color: var(--text-muted); padding: 12px; background: var(--bg-input); border-radius: 8px;">No tasks recorded for ${emp.name} yet.</div>` : `
+                <div style="display: flex; flex-direction: column; gap: 8px; max-height: 160px; overflow-y: auto;">
+                  ${empTasks.map(t => `
+                    <div style="padding: 10px 14px; background: var(--bg-input); border-radius: 8px; display: flex; justify-content: space-between; align-items: center; font-size: 0.86rem;">
+                      <div style="display: flex; align-items: center; gap: 10px;">
+                        ${getPriorityBadgeHtml(t.priority)}
+                        <span style="font-weight: 700; text-decoration: ${t.status === 'Completed' ? 'line-through' : 'none'}; color: ${t.status === 'Completed' ? 'var(--text-muted)' : 'var(--text-primary)'}">${t.title}</span>
+                        <span style="font-size: 0.72rem; color: var(--text-muted);">[By: ${t.assignedBy}]</span>
+                      </div>
+                      <span class="status-badge" style="background: ${t.status === 'Completed' ? 'var(--success-bg)' : t.status === 'Overdue' ? 'rgba(239,68,68,0.2)' : 'var(--bg-card)'}; color: ${t.status === 'Completed' ? 'var(--success-text)' : t.status === 'Overdue' ? '#f87171' : 'var(--accent-indigo)'}">${t.status}</span>
+                    </div>
+                  `).join('')}
+                </div>
+              `}
+            </div>
+          </div>
+        </div>
+      `;
+    }
+
+    // EMPLOYEE PORTAL TEMPLATE
+    function renderEmployeePortalHtml(emp) {
+      const empTasks = tasks.filter(t => t.empId === emp.id && t.status !== 'Deleted');
+      const assignedByAdmin = empTasks.filter(t => t.assignedBy === 'Super Admin');
+      const selfAdded = empTasks.filter(t => t.assignedBy === 'Self');
+      const completed = empTasks.filter(t => t.status === 'Completed').length;
+      const total = empTasks.length;
+      const pct = total > 0 ? Math.round((completed / total) * 100) : 0;
+
+      return `
+        <div class="glass-panel" style="padding: 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px;">
+          <div>
+            <span style="font-size: 0.8rem; font-weight: 700; color: var(--accent-purple); text-transform: uppercase;">EMPLOYEE PERSONAL PORTAL</span>
+            <h2 style="font-size: 1.6rem; font-weight: 800;">Welcome back, ${emp.name}!</h2>
+            <p style="font-size: 0.88rem; color: var(--text-secondary);">${emp.role} — ${emp.email}</p>
+          </div>
+          <div style="display: flex; align-items: center; gap: 16px;">
+            <div className="score-circle" style="width: 64px; height: 64px; border-radius: 50%; background: var(--accent-gradient); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 1.1rem; color: #fff;">${emp.score}%</div>
+            <button class="btn btn-primary" onclick="openSelfTaskModal()">➕ Add My Own Daily Task</button>
+          </div>
+        </div>
+
+        <div class="glass-panel" style="padding: 18px 22px; margin-bottom: 24px;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+            <span style="font-size: 0.85rem; font-weight: 700; color: var(--text-secondary);">YOUR TASK COMPLETION PROGRESS</span>
+            <span style="font-size: 0.9rem; font-weight: 800; color: var(--success-text);">${completed} of ${total} Completed (${pct}%)</span>
+          </div>
+          <div style="width: 100%; height: 8px; background: var(--bg-input); border-radius: 999px; overflow: hidden;">
+            <div style="height: 100%; width: ${pct}%; background: linear-gradient(90deg, #10b981, #34d399); transition: width 0.4s ease;"></div>
+          </div>
+        </div>
+
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">👑 Tasks Assigned to You by Super Admin (${assignedByAdmin.length})</h3>
+          ${assignedByAdmin.length === 0 ? `<div class="glass-panel" style="padding: 24px; text-align: center; color: var(--text-muted);">No tasks currently assigned by Super Admin.</div>` : `
+            <div style="display: flex; flex-direction: column; gap: 12px;">${assignedByAdmin.map(t => renderEmployeeTaskCard(t)).join('')}</div>
+          `}
+        </div>
+
+        <div>
+          <h3 style="font-size: 1.25rem; font-weight: 800; margin-bottom: 14px; display: flex; align-items: center; gap: 8px;">📝 My Self-Added Daily Tasks (${selfAdded.length})</h3>
+          ${selfAdded.length === 0 ? `<div class="glass-panel" style="padding: 24px; text-align: center; color: var(--text-muted);">You haven't created any personal daily tasks yet. Click "+ Add My Own Daily Task" above.</div>` : `
+            <div style="display: flex; flex-direction: column; gap: 12px;">${selfAdded.map(t => renderEmployeeTaskCard(t, true)).join('')}</div>
+          `}
+        </div>
+      `;
+    }
+
+    function renderEmployeeTaskCard(t, isSelf = false) {
+      const endDisp = t.endTime ? new Date(t.endTime).toLocaleString('en-US', { month:'short', day:'numeric', hour:'numeric', minute:'2-digit' }) : '';
+      const isCompleted = t.status === 'Completed';
+
+      return `
+        <div class="glass-panel" style="padding: 18px 20px; opacity: ${isCompleted ? 0.75 : 1};">
+          <div style="display: flex; align-items: flex-start; gap: 14px;">
+            <button onclick="toggleEmployeeTaskComplete('${t.id}')" style="width: 28px; height: 28px; border-radius: 50%; border: 2px solid ${isCompleted ? 'var(--success-text)' : 'var(--text-muted)'}; background: ${isCompleted ? 'var(--success-bg)' : 'transparent'}; cursor: pointer; color: var(--success-text); font-weight: bold; margin-top: 2px; flex-shrink: 0;">${isCompleted ? '✓' : ''}</button>
+            <div style="flex: 1;">
+              <div style="display: flex; items-center; gap: 10px; flex-wrap: wrap; margin-bottom: 4px;">
+                ${getPriorityBadgeHtml(t.priority)}
+                <h4 style="font-size: 1.05rem; font-weight: 700; text-decoration: ${isCompleted ? 'line-through' : 'none'}; color: ${isCompleted ? 'var(--text-muted)' : 'var(--text-primary)'}">${t.title}</h4>
+              </div>
+              ${t.description ? `<p style="font-size: 0.88rem; color: var(--text-secondary); margin-bottom: 8px;">${t.description}</p>` : ''}
+              <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 16px;">
+                ${endDisp ? `<span>Deadline: <strong style="color: var(--accent-indigo);">${endDisp}</strong></span>` : ''}
+                <span>Assigned By: <strong style="color: var(--text-primary);">${t.assignedBy}</strong></span>
+              </div>
+            </div>
+            ${isSelf ? `<div style="display: flex; gap: 6px;"><button class="btn btn-icon" style="color: #f87171;" onclick="deleteEmployeeTask('${t.id}')">🗑️</button></div>` : ''}
+          </div>
+        </div>
+      `;
+    }
+
+    function attachAdminListeners() {
+      const searchInp = document.getElementById('adminSearchInput');
+      if (searchInp) { searchInp.addEventListener('input', (e) => { adminSearchQuery = e.target.value; renderPortal(); }); }
+    }
+    function attachEmployeeListeners() {}
+
+    function openAddEmployeeModal() {
+      if (company.employees.length >= 10) {
+        showToast('⚠️ Maximum of 10 employees reached. Remove an employee before adding another.');
+        return;
+      }
+      document.getElementById('employeeForm').reset(); document.getElementById('empFormId').value = ''; document.getElementById('employeeModalTitle').innerText = 'Add New Employee'; openModal('employeeModal');
+    }
+    function editEmployee(empId) {
+      const emp = company.employees.find(e => e.id === empId);
+      if (emp) {
+        document.getElementById('empFormId').value = emp.id; document.getElementById('empFormName').value = emp.name;
+        document.getElementById('empFormRole').value = emp.role; document.getElementById('empFormEmail').value = emp.email;
+        document.getElementById('empFormPass').value = emp.password || 'emp123';
+        document.getElementById('employeeModalTitle').innerText = 'Edit Employee Profile'; openModal('employeeModal');
+      }
+    }
+
+    function deleteEmployee(empId) {
+      sounds.playDelete();
+      const emp = company.employees.find(e => e.id === empId);
+      if (emp && confirm(`Are you sure you want to remove employee "${emp.name}"?`)) {
+        company.employees = company.employees.filter(e => e.id !== empId); tasks = tasks.filter(t => t.empId !== empId);
+        logAction('Super Admin', `Removed employee ${emp.name}`); saveData(); showToast(`Employee ${emp.name} deleted.`);
+      }
+    }
+
+    document.getElementById('employeeForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const id = document.getElementById('empFormId').value;
+      const name = document.getElementById('empFormName').value.trim();
+      const role = document.getElementById('empFormRole').value.trim();
+      const email = document.getElementById('empFormEmail').value.trim();
+      const pass = document.getElementById('empFormPass').value.trim() || 'emp123';
+
+      if (id) { company.employees = company.employees.map(e => e.id === id ? { ...e, name, role, email, password: pass } : e); logAction('Super Admin', `Updated profile for ${name}`); }
+      else {
+        if (company.employees.length >= 10) { closeModal('employeeModal'); showToast('⚠️ Maximum of 10 employees reached.'); return; }
+        const newEmp = { id: 'emp' + (Date.now()), name, role, email, password: pass, score: 90 }; company.employees.push(newEmp); logAction('Super Admin', `Added new employee ${name} (${role})`);
+      }
+      saveData(); closeModal('employeeModal'); showToast(`Employee ${name} saved!`);
+    });
+
+    function openAssignTaskModal() {
+      const select = document.getElementById('assignEmpSelect');
+      select.innerHTML = company.employees.map(e => `<option value="${e.id}">${e.name} (${e.role})</option>`).join('');
+      document.getElementById('assignTaskForm').reset(); openModal('assignTaskModal');
+    }
+
+    document.getElementById('assignTaskForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const empId = document.getElementById('assignEmpSelect').value;
+      const title = document.getElementById('assignTitleInput').value.trim();
+      const description = document.getElementById('assignDescInput').value.trim();
+      const priority = document.getElementById('assignPrioritySelect').value;
+      const endTime = document.getElementById('assignEndInput').value;
+
+      const emp = company.employees.find(e => e.id === empId);
+      tasks.unshift({ id: 't' + Date.now(), empId, title, description, priority, endTime, status: 'Assigned', assignedBy: 'Super Admin', createdAt: new Date().toISOString() });
+      logAction('Super Admin', `Assigned task "${title}" [${priority}] to ${emp ? emp.name : 'employee'}`);
+      saveData(); closeModal('assignTaskModal'); showToast(`Task assigned to ${emp ? emp.name : 'employee'}!`);
+    });
+
+    function openSelfTaskModal() { document.getElementById('selfTaskForm').reset(); openModal('selfTaskModal'); }
+    document.getElementById('selfTaskForm').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const title = document.getElementById('selfTitleInput').value.trim();
+      const description = document.getElementById('selfDescInput').value.trim();
+      const priority = document.getElementById('selfPriorityInput').value;
+      const endTime = document.getElementById('selfEndInput').value;
+
+      const isAdmin = currentUser.type === 'admin';
+      const empId = isAdmin ? 'admin' : currentUser.id;
+      const actorName = isAdmin ? company.admin.name : ((company.employees.find(e => e.id === currentUser.id) || {}).name || 'Employee');
+
+      tasks.unshift({ id: 't' + Date.now(), empId, title, description, priority, endTime, status: 'Assigned', assignedBy: 'Self', createdAt: new Date().toISOString() });
+      logAction(actorName, `Created self-added task "${title}"`);
+      saveData(); closeModal('selfTaskModal'); showToast('Personal task added!');
+    });
+
+    function toggleEmployeeTaskComplete(taskId) {
+      tasks = tasks.map(t => {
+        if (t.id === taskId) {
+          const next = t.status === 'Completed' ? 'Assigned' : 'Completed';
+          if (next === 'Completed') {
+            sounds.playComplete(); try { confetti({ particleCount: 70, spread: 60, origin: { y: 0.7 } }); } catch(e){}
+            const actorName = t.empId === 'admin' ? company.admin.name : ((company.employees.find(e => e.id === t.empId) || {}).name || 'Employee');
+            logAction(actorName, `Marked task "${t.title}" as Completed`);
+          }
+          return { ...t, status: next };
+        }
+        return t;
+      });
+      saveData();
+    }
+
+    function deleteEmployeeTask(taskId) { sounds.playDelete(); tasks = tasks.map(t => t.id === taskId ? { ...t, status: 'Deleted' } : t); saveData(); showToast('Task moved to deleted.'); }
+    function openModal(id) { document.getElementById(id).classList.add('open'); }
+    function closeModal(id) { document.getElementById(id).classList.remove('open'); }
+
+    function exportExcelReport(empId) {
+      const emp = company.employees.find(e => e.id === empId); if (!emp) return;
+      const empTasks = tasks.filter(t => t.empId === empId);
+      let csv = `Employee Task History Report - ${company.name}\nEmployee Name,${emp.name}\nRole/Department,${emp.role}\nPerformance Score,${emp.score}%\n\nTask ID,Task Title,Priority,Assigned By,Status,Deadline,Created Date\n`;
+      empTasks.forEach(t => { csv += `"${t.id}","${t.title.replace(/"/g, '""')}","${t.priority}","${t.assignedBy}","${t.status}","${t.endTime || 'N/A'}","${t.createdAt}"\n`; });
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' }); const url = URL.createObjectURL(blob);
+      const a = document.createElement('a'); a.href = url; a.download = `Report_${emp.name.replace(/\s+/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`; a.click(); showToast(`📊 Generated Excel/CSV Sheet for ${emp.name}`);
+    }
+
+    function exportPdfReport(empId) {
+      const emp = company.employees.find(e => e.id === empId); if (!emp) return;
+      const empTasks = tasks.filter(t => t.empId === empId);
+      const printWin = window.open('', '_blank');
+      printWin.document.write(`
+        <html><head><title>Performance Report - ${emp.name}</title>
+        <style>body{font-family:sans-serif;padding:30px;color:#111;}h1{color:#4338ca;border-bottom:2px solid #4338ca;padding-bottom:8px;}table{width:100%;border-collapse:collapse;margin-top:20px;}th,td{border:1px solid #ccc;padding:10px;text-align:left;font-size:13px;}th{background:#f3f4f6;}</style></head>
+        <body><h1>Apex TaskSphere — Employee Performance Report</h1><p><strong>Company:</strong> ${company.name}</p><p><strong>Employee Name:</strong> ${emp.name}</p><p><strong>Title:</strong> ${emp.role}</p><p><strong>Performance Efficiency Score:</strong> ${emp.score}%</p><p><strong>Date Generated:</strong> ${new Date().toLocaleString()}</p>
+        <h3>Task Record History (${empTasks.length} Tasks)</h3><table><thead><tr><th>Title</th><th>Priority</th><th>Assigned By</th><th>Status</th><th>Deadline</th></tr></thead>
+        <tbody>${empTasks.map(t => `<tr><td><strong>${t.title}</strong></td><td>${t.priority}</td><td>${t.assignedBy}</td><td>${t.status}</td><td>${t.endTime || 'N/A'}</td></tr>`).join('')}</tbody></table>
+        <script>window.print();<\/script></body></html>
+      `);
+      printWin.document.close();
+    }
+
+    // INITIAL RENDER ON LOAD
+    renderPortal();
+
+    // Clean up the opening splash animation once it has finished fading out
+    setTimeout(() => {
+      const splash = document.getElementById('splashScreen');
+      if (splash) splash.remove();
+    }, 3200);
+  </script>
+</body>
+</html>
